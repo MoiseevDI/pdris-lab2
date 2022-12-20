@@ -1,0 +1,19 @@
+---
+- name: copy dockerfile to the react node
+  copy:
+    src: Dockerfile
+    dest: ~/ansible-run/Dockerfile
+
+- name: copy nginx conf to the react node
+  copy:
+    src: nginx.conf
+    dest: ~/ansible-run/nginx.conf
+
+- name: build nginx container image
+  docker_image:
+    name: react-nginx
+    build:
+      nocache: true
+      path: ~/ansible-run
+    source: build
+    state: present

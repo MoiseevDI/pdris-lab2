@@ -1,0 +1,8 @@
+---
+- name: run nginx container with react app
+  docker_container:
+    name: web-react-pdris2
+    image: react-nginx
+    state: started
+    ports:
+     - "8081:80"

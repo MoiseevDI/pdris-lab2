@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Build docker image
+      include_role:
+        name: app-build
+    - name: Create env for app
+      include_role:
+        name: app-create-env
+    - name: Deploy app
+      include_role:
+        name: app-start

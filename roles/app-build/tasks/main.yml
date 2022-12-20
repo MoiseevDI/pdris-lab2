@@ -1,0 +1,38 @@
+---
+- name: Docker installing
+  pip:
+    name: docker
+
+- name: create build directory
+  file:
+    path: ~/ansible-run
+    state: directory
+
+- name: copy files to the react node
+  copy:
+    src: Dockerfile
+    dest: ~/ansible-run/Dockerfile
+
+- name: remove web-react-builder-pdris2 container and react-builder image if exists
+  shell: "docker ps -q --filter 'name=web-react-builder-pdris2' && docker stop web-react-builder-pdris2 && docker rm -fv web-react-builder-pdris2 && docker image rm -f react-builder || echo 'Not Found'"
+
+- name: build builder container image
+  docker_image:
+    name: react-builder
+    build:
+      nocache: true
+      path: ~/ansible-run
+    source: build
+    state: present
+
+- name: run build container image
+  docker_container:
+    name: web-react-builder-pdris2
+    image: react-builder
+    volumes:
+      - '~/ansible-run/build:/usr/src/app/build'
+
+- name: cleanup dockerfile
+  file:
+    path: ~/ansible-run/Dockerfile
+    state: absent
